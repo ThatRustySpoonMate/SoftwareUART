@@ -3,9 +3,6 @@
 #include <stdint.h>
 #include "esp32-hal-gpio.h"
 
-
-//#define NOP __asm__ __volatile__ ("nop\n\t")
-
 #define millisecondsInSecond 1000000
 #define bitTime(baudRate) millisecondsInSecond / baudRate
 
@@ -14,7 +11,7 @@ typedef struct {
     uint16_t payload    : 8;
     uint16_t parity_bit : 1; 
     //uint16_t stop_bit   : 2;
-} UARTPacket;
+} SUARTPacket;
 
 
 // tx and rx are oriented to this device.
@@ -23,19 +20,19 @@ typedef struct {
     uint32_t baud_rate;
     uint8_t tx_pin;
     uint8_t rx_pin; 
-} UARTConfig;
+} SUARTConfig;
 
 
 typedef enum {
     GENERIC_ERROR = 0,
     SUCCESS = 1,
     TIMEOUT_EXCEEDED = 2
-} UARTStatusType;
+} SUARTStatusType;
 
-void _calculate_parity(UARTPacket *pkt);
+void _calculate_parity(SUARTPacket *pkt);
 
-UARTStatusType SUART_init(UARTConfig *conf);
+SUARTStatusType SUART_init(SUARTConfig *conf);
 
-UARTStatusType UART_transmit(UARTConfig *conf, UARTPacket *pkt);
+SUARTStatusType SUART_transmit(SUARTConfig *conf, SUARTPacket *pkt);
 
-UARTStatusType UART_receive(UARTConfig *conf, UARTPacket *pkt, uint32_t timeout);
+SUARTStatusType SUART_receive(SUARTConfig *conf, SUARTPacket *pkt, uint32_t timeout);

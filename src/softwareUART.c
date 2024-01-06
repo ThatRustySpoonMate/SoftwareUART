@@ -1,6 +1,6 @@
 #include "softwareUART.h"
 
-void _calculate_parity(UARTPacket *pkt) {
+void _calculate_parity(SUARTPacket *pkt) {
     uint8_t tmp_payload = pkt->payload;
 
     // Loop through payload and flip parity for each '1' present to ensure an even payload+parity
@@ -12,7 +12,7 @@ void _calculate_parity(UARTPacket *pkt) {
     }
 }
 
-UARTStatusType SUART_init(UARTConfig *conf) {
+SUARTStatusType SUART_init(SUARTConfig *conf) {
     pinMode(conf->rx_pin, INPUT);
     pinMode(conf->tx_pin, OUTPUT);
 
@@ -21,7 +21,7 @@ UARTStatusType SUART_init(UARTConfig *conf) {
     return SUCCESS;
 }
 
-UARTStatusType UART_transmit(UARTConfig *conf, UARTPacket *pkt) {
+SUARTStatusType SUART_transmit(SUARTConfig *conf, SUARTPacket *pkt) {
     // Init as much as we can before gpio actions
     uint8_t tmp_payload = pkt->payload;
     _calculate_parity(pkt);
@@ -49,7 +49,7 @@ UARTStatusType UART_transmit(UARTConfig *conf, UARTPacket *pkt) {
 }
 
 // Timeout is 32 bit unsigned int in milliseconds
-UARTStatusType UART_receive(UARTConfig *conf, UARTPacket *pkt, uint32_t timeout) {
+SUARTStatusType SUART_receive(SUARTConfig *conf, SUARTPacket *pkt, uint32_t timeout) {
     static uint32_t entryTime;
     entryTime = millis();
     
@@ -72,6 +72,14 @@ UARTStatusType UART_receive(UARTConfig *conf, UARTPacket *pkt, uint32_t timeout)
     // Receive Parity bit
     delayMicroseconds( bitTime(conf->baud_rate) );
     pkt->parity_bit = digitalRead(conf->rx_pin);
+
+    uint8_t test_end_bit1, test_end_bit2;
+
+    delayMicroseconds( bitTime(conf->baud_rate) );
+    test_end_bit1 = digitalRead(conf->rx_pin);
+
+    delayMicroseconds( bitTime(conf->baud_rate) );
+    test_end_bit2 = digitalRead(conf->rx_pin);
 
     return SUCCESS;
 }
