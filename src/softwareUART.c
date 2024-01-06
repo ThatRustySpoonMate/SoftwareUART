@@ -23,7 +23,7 @@ UARTStatusType SUART_init(UARTConfig *conf) {
 
 UARTStatusType UART_transmit(UARTConfig *conf, UARTPacket *pkt) {
     // Init as much as we can before gpio actions
-    uint8_t tmp_payload = pkt;
+    uint8_t tmp_payload = pkt->payload;
     _calculate_parity(pkt);
     
     // Start bit
