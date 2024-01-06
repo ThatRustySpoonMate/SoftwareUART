@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "arduino.h": "c"
+        "arduino.h": "c",
+        "esp32-hal-bt.h": "c",
+        "esp32-hal-i2c.h": "c"
     }
 }

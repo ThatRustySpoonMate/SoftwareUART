@@ -47,3 +47,31 @@ UARTStatusType UART_transmit(UARTConfig *conf, UARTPacket *pkt) {
 
     return SUCCESS;
 }
+
+// Timeout is 32 bit unsigned int in milliseconds
+UARTStatusType UART_receive(UARTConfig *conf, UARTPacket *pkt, uint32_t timeout) {
+    static uint32_t entryTime;
+    entryTime = millis();
+    
+    // Wait for RX line to be pulled low
+    while(digitalRead(conf->rx_pin) && millis() < entryTime + timeout) {
+        NOP();
+    }
+
+    // Check if timeout has elapsed
+    if(millis() < entryTime + timeout) {
+        return TIMEOUT_EXCEEDED;
+    }
+
+    // Receive payload
+    for(uint8_t idx = 0; idx < 8; idx++) {
+        delayMicroseconds( bitTime(conf->baud_rate) );
+        pkt->payload = pkt->payload | ( digitalRead(conf->rx_pin) << idx );
+    }
+
+    // Receive Parity bit
+    delayMicroseconds( bitTime(conf->baud_rate) );
+    pkt->parity_bit = digitalRead(conf->rx_pin);
+
+    return SUCCESS;
+}

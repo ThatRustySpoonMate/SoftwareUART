@@ -1,5 +1,10 @@
+#pragma once
+
 #include <stdint.h>
 #include "esp32-hal-gpio.h"
+
+
+//#define NOP __asm__ __volatile__ ("nop\n\t")
 
 #define millisecondsInSecond 1000000
 #define bitTime(baudRate) millisecondsInSecond / baudRate
@@ -23,8 +28,14 @@ typedef struct {
 
 typedef enum {
     GENERIC_ERROR = 0,
-    SUCCESS = 1
+    SUCCESS = 1,
+    TIMEOUT_EXCEEDED = 2
 } UARTStatusType;
 
+void _calculate_parity(UARTPacket *pkt);
 
 UARTStatusType SUART_init(UARTConfig *conf);
+
+UARTStatusType UART_transmit(UARTConfig *conf, UARTPacket *pkt);
+
+UARTStatusType UART_receive(UARTConfig *conf, UARTPacket *pkt, uint32_t timeout);
