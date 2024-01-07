@@ -3,6 +3,11 @@
 #include <stdint.h>
 #include "esp32-hal-gpio.h"
 
+
+#ifdef __cplusplus
+  extern "C" {
+#endif
+
 #define millisecondsInSecond 1000000
 #define bitTime(baudRate) millisecondsInSecond / baudRate
 
@@ -36,3 +41,8 @@ SUARTStatusType SUART_init(SUARTConfig *conf);
 SUARTStatusType SUART_transmit(SUARTConfig *conf, SUARTPacket *pkt);
 
 SUARTStatusType SUART_receive(SUARTConfig *conf, SUARTPacket *pkt, uint32_t timeout);
+
+
+#ifdef __cplusplus
+}
+#endif

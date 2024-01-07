@@ -2,6 +2,7 @@
 
 void _calculate_parity(SUARTPacket *pkt) {
     uint8_t tmp_payload = pkt->payload;
+    pkt->parity_bit = 0;
 
     // Loop through payload and flip parity for each '1' present to ensure an even payload+parity
     for(uint8_t idx = 0; idx < 8; idx++) {
@@ -43,7 +44,7 @@ SUARTStatusType SUART_transmit(SUARTConfig *conf, SUARTPacket *pkt) {
 
     // Stop bit/s
     digitalWrite(conf->tx_pin, HIGH);
-    delayMicroseconds( 2 * bitTime(conf->baud_rate) );
+    delayMicroseconds( 2 * bitTime(conf->baud_rate) ); // Can remove this
 
     return SUCCESS;
 }
